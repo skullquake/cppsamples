@@ -22,8 +22,7 @@ CFLAGS=\
 	-I../cpputils/include
 LDFLAGS=\
 	-L./lib\
-	-std=c++11\
-	-stdlib=libc++
+	-std=c++11
 all:\
 	$(BIN)
 $(BIN):$(OBJS)
