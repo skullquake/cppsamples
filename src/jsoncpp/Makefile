@@ -24,7 +24,8 @@ CXXFLAGS+=\
 	-I./include
 LDFLAGS+=\
 	-L./lib\
-	-std=c++11
+	-std=c++11\
+	-ljsoncpp
 all:\
 	$(BIN)
 $(BIN):$(OBJS)
