@@ -1,63 +1,18 @@
-OS=$(shell $(CXX) -dumpmachine)
-SOEXT?=so
-BINEXT?=out
-ifeq (,$(findstring mingw,$(OS)))
-SOEXT?=dll
-BINEXT?=exe
-endif
-ifeq (,$(findstring djgpp,$(OS)))
-SOEXT?=dll
-BINEXT?=exe
-endif
-ifeq ($(PREFIX),)
-PREFIX := /usr/local
-endif
-CC?=gcc
-CXX?=g++
-AR?=ar
-BUILDDIR=./bin/build
-BIN=./bin/a.$(BINEXT)
-SRCDIR=src
-SRC:=$(shell find $(SRCDIR) -name '*.cpp')
-OBJS:=$(addprefix $(BUILDDIR)/,$(SRC:%.cpp=%.o))
+CC=g++
+SRC=./src/a.cpp
+BIN=./bin/a.out
 CFLAGS=\
-	-I./include\
-	-I../cpputils/include
-LDFLAGS=\
-	-L./lib\
-	-std=c++11
-all:\
-	$(BIN)
-$(BIN):$(OBJS)
-	@printf "generating $@...\n"
-	@$(CXX)\
+       -lstdc++\
+       -std=c++17
+$(BIN): $(SRC)
+	@$(CC)\
 		$(CFLAGS)\
-		$(OBJS)\
-		$(LDFLAGS)\
+		$(SRC)\
 		-o $(BIN)
-$(BUILDDIR)/%.o: %.cpp
-	@printf "generating $@...\n"
-	@mkdir -p $(@D)
-	@$(CXX)\
-		$(CFLAGS)\
-		-c $<\
-		$(LDFLAGS)\
-		-o $@
 .phony:\
 	run\
-	clean\
-	lsvar
-clean:
-	@rm -r ./bin
+	clean
 run:
-	$(BIN)
-lsvar:
-	@echo $(BIN)
-	@echo $(OBJS)
-	@echo $(SRC)
-	@echo $(SRCDIR)
-	@echo $(PREFIX)
-
-
-
-
+	@$(BIN)|xxd
+clean:
+	@rm $(BIN)

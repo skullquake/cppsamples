@@ -1,5 +1,5 @@
 #include<iostream>
-#include<jsoncpp/json/json.h>
+#include<json/json.h>
 int main(int argc,char** argv){
 	Json::Value a;
 	for(int i=0;i<4096;i++){
