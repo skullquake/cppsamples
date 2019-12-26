@@ -15,6 +15,6 @@ $(BIN): $(SRC)
 	run\
 	clean
 run:
-	@$(BIN)
+	@echo 123|$(BIN)
 clean:
 	@rm $(BIN)

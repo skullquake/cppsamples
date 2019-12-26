@@ -1,3 +1,13 @@
+/*
+ * instead of using c-style arrays you can use std::array in c++
+ * this is a special type of fixed-size container
+ * it is defined in the <array> heade file
+ * its a thin wrapper around c-style arrays
+ * advantages include:
+ *  their size is always known
+ *  they are not automatically cast to a pointer, which causes certain bugs
+ *  they are iterable
+ */
 #include<iostream>
 #include<array>
 int main(int argc,char** argv){
@@ -33,6 +43,5 @@ int main(int argc,char** argv){
 		std::cout<<a.back()<<std::endl;
 		std::cout<<"----------------------------------------"<<std::endl;
 	}
-
 	return 0;
 }
