@@ -14,7 +14,7 @@ $(BIN): $(SRC)
 .phony:\
 	run\
 	clean
-run:$(BIN)
+run: $(BIN)
 	@$(BIN)
 clean:
 	@rm $(BIN)

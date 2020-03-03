@@ -3,7 +3,7 @@ SRC=./src/a.cpp
 BIN=./bin/a.out
 CFLAGS=\
        -lstdc++\
-       -std=c++17
+       -std=c++11
 LDFLAGS=
 $(BIN): $(SRC)
 	@$(CC)\
