@@ -1,0 +1,166 @@
+#include<iostream>
+#include<vector>
+#include<map>
+#include<functional>
+char fnup(char c){
+	return ::toupper(c);
+}
+char fnlo(char c){
+	return ::tolower(c);
+}
+//--------------------------------------------------------------------------------
+//class for class member function functor test
+//--------------------------------------------------------------------------------
+class A{
+	public:
+		A(int maP):ma(maP){};
+		int get_ma()const{return this->ma;};
+	private:
+		int ma;
+};
+//--------------------------------------------------------------------------------
+//end class
+//--------------------------------------------------------------------------------
+int main(int argc,char** argv){
+	//std::string example
+	{
+		std::string data="Lorem Ipsum Sit Consecutar Dolor Amet";
+		std::cout<<data<<std::endl;
+		std::transform(data.begin(),data.end(),data.begin(),::tolower);
+		std::cout<<data<<std::endl;
+		std::transform(data.begin(),data.end(),data.begin(),::toupper);
+		std::cout<<data<<std::endl;
+		std::transform(data.begin(),data.end(),data.begin(),fnlo);
+		std::cout<<data<<std::endl;
+		std::transform(data.begin(),data.end(),data.begin(),fnup);
+		std::cout<<data<<std::endl;
+
+		int idx=0;
+		std::transform(data.begin(),data.end(),data.begin(),[&](char&c){
+				return idx++%2?char(::tolower(c)):char(::toupper(c));
+		});
+		std::cout<<data<<std::endl;
+	}
+	//binary operation
+	{
+		std::cout<<"binary itr,itr,itr,itr,itr,op:"<<std::endl;
+		std::vector<int> v0={0,1,2,3};
+		std::vector<int> v1={0,2,4,8};
+		std::vector<int> v2;
+		v2.resize(v0.size());
+		for(auto a:v0){
+			std::cout<<a<<" ";
+		}
+		std::cout<<std::endl;
+		for(auto a:v1){
+			std::cout<<a<<" ";
+		}
+		std::cout<<std::endl;
+		std::transform(v0.begin(),v0.end(),v1.begin(),v2.begin(),[](int a,int b){
+				return a+b;
+		});
+		for(auto a:v2){
+			std::cout<<a<<" ";
+		}
+		std::cout<<std::endl;
+	}
+	//different types of containers
+	{
+		std::cout<<"different containers:"<<std::endl;
+		std::map<std::string,int>  m={
+			std::make_pair("A",0),
+			std::make_pair("B",2),
+			std::make_pair("C",4),
+			std::make_pair("D",8)
+		};
+		std::vector<int> v;
+		v.resize(m.size());
+		std::transform(m.begin(),m.end(),v.begin(),[](auto a){return a.second;});
+		for(auto a:v){
+			std::cout<<a<<" ";
+		}
+		std::cout<<std::endl;
+		v.clear();
+		std::transform(m.begin(),m.end(),std::back_inserter(v),[](auto a){return a.second;});
+		for(auto a:v){
+			std::cout<<a<<" ";
+		}
+		std::cout<<std::endl;
+
+	}
+	//class member function test [lambda]
+	{
+		std::vector<A> a={
+			A(0),
+			A(1),
+			A(2),
+			A(3)
+		};
+		std::vector<int> b;
+		std::transform(
+			std::begin(a),
+			std::end(a),
+			std::back_inserter(b),
+			//A::get_ma//will not compile
+			/*
+			 * ./src/a.cpp:103:7: error: call to non-static member function without an object argument
+			 *                         A::get_ma
+			 *                                                 ~~~^~~~~~
+			 *                                                 1 error generated.
+			 *
+			 */
+			[](auto c){
+				return c.get_ma();
+			}
+		);
+		std::cout<<"Class member lambdas:"<<std::endl;
+		for(auto c:b){
+			std::cout<<c<<" ";
+		}
+		std::cout<<std::endl;
+	}
+	//class member function test [std::function]
+	{
+		std::vector<A> a={
+			A(0),
+			A(1),
+			A(2),
+			A(3)
+		};
+		std::vector<int> b;
+		std::transform(
+			std::begin(a),
+			std::end(a),
+			std::back_inserter(b),
+			std::function<int(A const&)>(&A::get_ma)
+		);
+		std::cout<<"Class member std::function:"<<std::endl;
+		for(auto c:b){
+			std::cout<<c<<" ";
+		}
+		std::cout<<std::endl;
+	}
+	//class member function test [std::mem_fn]
+	{
+		std::vector<A> a={
+			A(0),
+			A(1),
+			A(2),
+			A(3)
+		};
+		std::vector<int> b;
+		std::transform(
+			std::begin(a),
+			std::end(a),
+			std::back_inserter(b),
+			std::mem_fn(&A::get_ma)
+		);
+		std::cout<<"Class member std::function:"<<std::endl;
+		for(auto c:b){
+			std::cout<<c<<" ";
+		}
+		std::cout<<std::endl;
+	}
+	return 0;
+}
+
