@@ -17,6 +17,34 @@ int main(int argc,char** argv){
 		std::cout<<str<<std::endl;
 		std::cout<<result<<std::endl;
 	}
+	//sample replacement
+	{
+		std::map<std::string,std::string> mtok={
+			{"lorem","dorkum"},
+			{"ipsum","ipkus"},
+			{"sit","greatesthits"},
+			{"consecutar","conssecutively"}
+		};
+		std::string str=R"(lorem ipsum sit consecutar)";
+		for(auto tok:mtok){	
+			const std::string format(
+				regex_replace(
+					tok.second,
+					std::regex("\\$"),
+					"$$$$"
+				)//escape regex escape sequences in format
+			)
+			;
+			str=regex_replace(
+				str,
+				std::regex(tok.first),
+				format,
+				std::regex_constants::format_default
+			);
+		}
+		std::cout<<str<<std::endl;
+	}
+
 	//sample token replacement
 	{
 		std::map<std::string,std::string> mtok={
@@ -54,6 +82,7 @@ R"(<h1>$TOK0</h1>
 		}
 		std::cout<<str<<std::endl;
 	}
+
 
 	return 0;
 }
