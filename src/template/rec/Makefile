@@ -29,6 +29,7 @@ all:\
 	$(BIN)
 $(BIN):$(OBJS)
 	@printf "generating $@...\n"
+	@mkdir -p $(@D)
 	$(CXX)\
 		$(CXXFLAGS)\
 		$(OBJS)\
@@ -50,13 +51,3 @@ clean:
 	@rm -r ./bin
 run:
 	$(BIN)
-lsvar:
-	@echo $(BIN)
-	@echo $(OBJS)
-	@echo $(SRC)
-	@echo $(SRCDIR)
-	@echo $(PREFIX)
-
-
-
-
