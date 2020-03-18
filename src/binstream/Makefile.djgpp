@@ -1,0 +1,23 @@
+CC=~/djgpp/720/bin/i586-pc-msdosdjgpp-g++
+SRC=./src/a.cpp
+BIN=./bin/a.exe
+DEPLOYDIR=/mnt/c/tmp/dosdrive/tmp
+CFLAGS=\
+       -lstdc++\
+       -std=c++17
+LDFLAGS=
+$(BIN): $(SRC)
+	@$(CC)\
+		$(CFLAGS)\
+		$(SRC)\
+		$(LDFLAGS)\
+		-o $(BIN)
+.phony:\
+	run\
+	clean
+run:$(BIN)
+	@$(BIN)
+clean:$(BIN)
+	@rm $(BIN)
+deploy: $(BIN)
+	@cp $(BIN) $(DEPLOYDIR)
