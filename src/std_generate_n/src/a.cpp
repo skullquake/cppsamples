@@ -1,4 +1,5 @@
 #include<cstdlib>
+#include<ctime>
 #include<algorithm>
 #include<functional>
 #include<iterator>
@@ -6,16 +7,7 @@
 #include<iostream>
 int main(void){
 	std::vector<int>a;
-	std::generate_n(
-		std::back_inserter(a),
-		8,
-		[](){class{
-			public:
-				int operator()(){return acc++;}
-			private:
-				int acc=0;
-		}_;return _;}()//how to make anonymous class instance???
-	);
+	std::generate_n(std::back_inserter(a),8,[](){return 42;});
 	std::copy(a.begin(),a.end(),std::ostream_iterator<int>(std::cout," "));std::cout<<std::endl;
 	a.clear();
 	std::generate_n(
@@ -26,6 +18,22 @@ int main(void){
 				int operator()(){return acc+=acc;}
 			private:
 				int acc=1;
+		}_;return _;}()//how to make anonymous class instance???
+	);
+	std::copy(a.begin(),a.end(),std::ostream_iterator<int>(std::cout," "));std::cout<<std::endl;
+	a.clear();
+	srand(time(0));
+	std::generate_n(
+		std::back_inserter(a),
+		8,
+		[](){class{
+			public:
+				int operator()(){
+					acc+=10;
+					return acc+rand()%10;
+				}
+			private:
+				int acc=0;
 		}_;return _;}()//how to make anonymous class instance???
 	);
 	std::copy(a.begin(),a.end(),std::ostream_iterator<int>(std::cout," "));std::cout<<std::endl;
