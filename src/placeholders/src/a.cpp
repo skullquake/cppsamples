@@ -1,0 +1,39 @@
+#include<iostream>
+#include<functional>
+#include<cstdlib>
+int main(void){
+	{
+		std::cout<<(std::plus<int>()(4,2))<<std::endl;
+		std::cout<<(std::bind(std::plus<int>(),4,2)())<<std::endl;
+		std::cout<<(std::bind(std::plus<int>(),std::placeholders::_1,std::placeholders::_2)(4,2))<<std::endl;
+		std::cout<<(std::bind(std::plus<int>(),std::placeholders::_2,std::placeholders::_1)(4,2))<<std::endl;
+		std::cout<<(std::bind(std::plus<int>(),4,std::placeholders::_1)(2))<<std::endl;
+		std::cout<<(std::bind(std::plus<int>(),std::placeholders::_1,4)(2))<<std::endl;
+	}
+	{
+		std::cout<<(std::minus<int>()(4,2))<<std::endl;
+		std::cout<<(std::bind(std::minus<int>(),4,2)())<<std::endl;
+		std::cout<<(std::bind(std::minus<int>(),std::placeholders::_1,std::placeholders::_2)(4,2))<<std::endl;
+		std::cout<<(std::bind(std::minus<int>(),std::placeholders::_2,std::placeholders::_1)(4,2))<<std::endl;
+		std::cout<<(std::bind(std::minus<int>(),4,std::placeholders::_1)(2))<<std::endl;
+		std::cout<<(std::bind(std::minus<int>(),std::placeholders::_1,4)(2))<<std::endl;
+	}
+	{
+		//1+3-5
+		std::cout<<std::plus<int>()(1,std::minus<int>()(3,5))<<std::endl;
+		//a+b-c
+		auto b=std::bind(
+				std::plus<int>(),
+				std::placeholders::_1,
+				std::bind(
+					std::minus<int>(),
+					std::placeholders::_2,
+					std::placeholders::_3
+				)
+		);
+		std::cout<<b(0,1,2)<<std::endl;
+		std::cout<<b(1,2,3)<<std::endl;
+		std::cout<<b(2,3,4)<<std::endl;
+	}
+	return EXIT_SUCCESS;
+}
