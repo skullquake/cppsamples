@@ -2,6 +2,7 @@
 #include<vector>
 #include<map>
 #include<functional>
+#include<iterator>
 #include<cstdlib>
 char fnup(char c){
 	return ::toupper(c);
@@ -215,6 +216,18 @@ int main(int argc,char** argv){
 				std::for_each(v.begin(),v.end(),[](const int&a){std::cout<<a<<" ";});std::cout<<std::endl;
 			}
 		}
+	}
+	{
+		std::vector<int>a{0,1,2,3};
+		std::vector<int>b{4,5,6,7};
+		std::vector<int>c;
+		std::copy(a.begin(),a.end(),std::ostream_iterator<int>(std::cout," "));std::cout<<std::endl;
+		std::copy(b.begin(),b.end(),std::ostream_iterator<int>(std::cout," "));std::cout<<std::endl;
+		std::transform(a.begin(),a.end(),b.begin(),std::back_inserter(c),[](const auto&a,const auto&b){return a*b;});
+		std::copy(c.begin(),c.end(),std::ostream_iterator<int>(std::cout," "));std::cout<<std::endl;
+		c.clear();
+		std::transform(a.begin(),a.end(),b.begin(),std::back_inserter(c),std::multiplies<int>());
+		std::copy(c.begin(),c.end(),std::ostream_iterator<int>(std::cout," "));std::cout<<std::endl;
 	}
 	return EXIT_SUCCESS;
 }
