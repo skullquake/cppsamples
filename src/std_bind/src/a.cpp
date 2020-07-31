@@ -1,5 +1,17 @@
 #include<iostream>
 #include<functional>
+class C{
+	public:
+		C(){};
+		~C(){};
+		void vv(void){
+			std::cout<<"C::vv()"<<std::endl;
+		}
+		void vi(int i){
+			std::cout<<"C::vi():"<<i<<std::endl;
+		}
+	private:
+};
 void vii(int,int);
 int main(void){
 	[](int a,int b){std::cout<<"["<<a<<","<<b<<"]"<<std::endl;}(1,2);
@@ -84,6 +96,14 @@ int main(void){
 		[](decltype(b)&b,decltype(a)&a){b(a);}(b,a);
 		std::cout<<&a<<":"<<a<<std::endl;
 		std::cout<<std::endl;
+	}
+	{
+		std::vector<C>v;
+		for(size_t i=0;i<8;++i){
+			v.push_back(C());
+		}
+		std::for_each(v.begin(),v.end(),std::bind(&C::vv,std::placeholders::_1));
+		std::for_each(v.begin(),v.end(),std::bind(&C::vi,std::placeholders::_1,42));
 	}
 	return EXIT_SUCCESS;
 }
