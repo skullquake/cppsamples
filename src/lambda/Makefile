@@ -4,7 +4,7 @@ BIN=./bin/a.out
 CFLAGS=\
        -lstdc++\
        -std=c++17
-LDFLAGS=
+LDFLAGS=-pthread
 $(BIN): $(SRC)
 	@mkdir -p $(@D)
 	@$(CC)\
