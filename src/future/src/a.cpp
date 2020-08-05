@@ -56,6 +56,7 @@ void t1(){
 	std::cout<<"t1():end\n";
 }
 int main(int argc,char**argv){
+	int ret=EXIT_SUCCESS;
 	if(argc==2){
 		try{
 			int opt=std::stoi(argv[1]);
@@ -68,13 +69,16 @@ int main(int argc,char**argv){
 					break;
 				default:
 					std::cerr<<"Invalid option\n";
+					ret=EXIT_FAILURE;
 					break;
 			}
 		}catch(std::exception e){
 			std::cerr<<"Error: "<<e.what()<<'\n';
+			ret=EXIT_FAILURE;
 		}
 	}else{
 		std::cerr<<"Invalid options\n";
+		ret=EXIT_FAILURE;
 	}
-	return EXIT_SUCCESS;
+	return ret;
 }
