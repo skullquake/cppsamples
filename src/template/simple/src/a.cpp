@@ -1,5 +1,4 @@
-#include<iostream>
-int main(int argc,char** argv){
-	std::cout<<"Hello world"<<std::endl;
-	return 0;
+#include<cstdlib>
+int main(void){
+	return EXIT_SUCCESS;
 }
