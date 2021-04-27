@@ -1,65 +1,65 @@
 ifndef TOOLCHAINDIR
-	TOOLCHAINDIR=$(shell dirname `which gcc`)/../
+	TOOLCHAINDIR=/usr/
 endif
-ifndef COMPILERPREFIX
-	COMPILERPREFIX=
+ifndef PREFIX
+	PREFIX=x86_64-linux-gnu
 endif
-ifndef COMPILERPOSTFIX
-	COMPILERPOSTFIX=
+ifndef POSTFIX
+	POSTFIX=
 endif
-ifdef $(word 1, COMPILERPREFIX)
+ifdef $(word 1, PREFIX)
 	SEP0=-
 else
 	SEP0=
 endif
-ifdef $(word 1, COMPILERPOSTFIX)
+ifdef $(word 1, POSTFIX)
 	SEP1=-
 else
 	SEP1=
 endif
 ifeq ($(OS),Windows_NT)
-   HOST_OS := Windows
+   THEOS := Windows
    SHELL = cmd
     ifeq '$(findstring ;,$(PATH))' ';'
-       HOST_OS := Windows
+       THEOS := Windows
     else
-        HOST_OS := $(shell uname 2>/dev/null || $(ECHO) Unknown)
-        HOST_OS := $(patsubst CYGWIN%,Cygwin,$(HOST_OS))
-        HOST_OS := $(patsubst MSYS%,MSYS,$(HOST_OS))
-        HOST_OS := $(patsubst MINGW64%,MINGW,$(HOST_OS))
-        HOST_OS := $(patsubst MINGW%,MINGW64,$(HOST_OS))
+        THEOS := $(shell uname 2>/dev/null || $(ECHO) Unknown)
+        THEOS := $(patsubst CYGWIN%,Cygwin,$(THEOS))
+        THEOS := $(patsubst MSYS%,MSYS,$(THEOS))
+        THEOS := $(patsubst MINGW64%,MINGW,$(THEOS))
+        THEOS := $(patsubst MINGW%,MINGW64,$(THEOS))
     endif
     EXT := .exe
 else
     UNAME_S := $(shell uname -s)
-    HOST_OS := $(UNAME_S)
+    THEOS := $(UNAME_S)
     ifeq ($(UNAME_S),Linux)
     endif
     ifeq ($(UNAME_S),Darwin)
     endif
     ifneq ($(filter arm%,$(UNAME_P)),)
-        HOST_OS=ARM
+        THEOS=ARM
     endif
     EXT := .so
 endif
-ifeq ($(HOST_OS),$(filter $(HOST_OS),Windows_NT MINGW MINGW64 MSYS))
+ifeq ($(THEOS),$(filter $(THEOS),Windows_NT MINGW MINGW64 MSYS))
         ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
-            HOST_PROC=AMD64
+            PROC=AMD64
         else
         ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
-            HOST_PROC=AMD64
+            PROC=AMD64
         endif
         ifeq ($(PROCESSOR_ARCHITECTURE),x86)
-            HOST_PROC=IA32
+            PROC=IA32
         endif
     endif
-else ifeq ($(HOST_OS),$(filter $(HOST_OS),Linux Darwin ARM))
+else ifeq ($(THEOS),$(filter $(THEOS),Linux Darwin ARM))
     UNAME_P := $(shell uname -p)
     ifeq ($(UNAME_P),x86_64)
-        HOST_PROC=AMD64
+        PROC=AMD64
     endif
     ifneq ($(filter %86,$(UNAME_P)),)
-        HOST_PROC=IA32
+        PROC=IA32
     endif
 endif
 RM=/bin/rm
@@ -70,22 +70,21 @@ ECHO=/bin/echo
 CAT=/bin/cat
 ECHO=/bin/echo
 MV=/bin/mv
-CXX=$(TOOLCHAINDIR)bin/$(COMPILERPREFIX)$(SEP0)g++$(SEP1)$(COMPILERPOSTFIX)
-CC=$(TOOLCHAINDIR)bin/$(COMPILERPREFIX)$(SEP0)gcc$(SEP1)$(COMPILERPOSTFIX)
-AR=$(TOOLCHAINDIR)bin/$(COMPILERPREFIX)$(SEP0)ar$(SEP1)$(COMPILERPOSTFIX)
-LD=$(TOOLCHAINDIR)bin/$(COMPILERPREFIX)$(SEP0)ld$(SEP1)$(COMPILERPOSTFIX)
-OBJDUMP=$(TOOLCHAINDIR)bin/$(COMPILERPREFIX)$(SEP0)objdump$(SEP1)$(COMPILERPOSTFIX)
-NM=$(TOOLCHAINDIR)bin/$(COMPILERPREFIX)$(SEP0)nm$(SEP1)$(COMPILERPOSTFIX)
-STRIP=$(TOOLCHAINDIR)bin/$(COMPILERPREFIX)$(SEP0)strip
+CXX=$(TOOLCHAINDIR)bin/$(PREFIX)$(SEP0)g++$(SEP1)$(POSTFIX)
+CC=$(TOOLCHAINDIR)bin/$(PREFIX)$(SEP0)gcc$(SEP1)$(POSTFIX)
+AR=$(TOOLCHAINDIR)bin/$(PREFIX)$(SEP0)ar$(SEP1)$(POSTFIX)
+LD=$(TOOLCHAINDIR)bin/$(PREFIX)$(SEP0)ld$(SEP1)$(POSTFIX)
+OBJDUMP=$(TOOLCHAINDIR)bin/$(PREFIX)$(SEP0)objdump$(SEP1)$(POSTFIX)
+NM=$(TOOLCHAINDIR)bin/$(PREFIX)$(SEP0)nm$(SEP1)$(POSTFIX)
+STRIP=$(TOOLCHAINDIR)bin/$(PREFIX)$(SEP0)strip
 CPPCHECK=/usr/bin/cppcheck
 #/usr/local/djgpp/i586-pc-msdosdjgpp/bin/dxe3gen
 #/usr/local/djgpp/bin//i586-pc-msdosdjgpp/bin/dxe3gen
-ifneq (,$(findstring djgpp,$(COMPILERPREFIX)))
+ifneq (,$(findstring djgpp,$(PREFIX)))
 	DXE3GEN=$(TOOLCHAINDIR)/i586-pc-msdosdjgpp/bin/dxe3gen
 	DXE3RES=$(TOOLCHAINDIR)/i586-pc-msdosdjgpp/bin/dxe3res
 endif
 GCCVERSION=$(shell $(CC) -dumpversion)
-TGT_MACHINE=$(shell $(CC) -dumpmachine)
 ifdef $(word 1, GCCVERSION)
 	SEP2=-
 else
@@ -95,48 +94,45 @@ endif
 #SRC+=./src/config/config.cpp
 SRCDIR=src
 BUILDROOT=build
-#BUILDDIR=$(BUILDROOT)/$(COMPILERPREFIX)$(SEP1)$(COMPILERPOSTFIX)
-BUILDDIR=$(BUILDROOT)/$(TGT_MACHINE)
+BUILDDIR=$(BUILDROOT)/$(PREFIX)$(SEP1)$(POSTFIX)
 LIBDIR=$(BUILDDIR)/lib/
-#DEPLOYDIR=../../build/$(COMPILERPREFIX)$(SEP1)$(COMPILERPOSTFIX)/lib/
-DEPLOYDIR=../../build/$(TGT_MACHINE)/lib/
+DEPLOYDIR=../../build/$(PREFIX)$(SEP1)$(POSTFIX)/lib/
 SRC:=$(shell find $(SRCDIR) -name '*.c' -o -name '*.cpp')
 OBJROOT=./obj/
-#OBJDIR=$(OBJROOT)$(COMPILERPREFIX)$(SEP1)$(COMPILERPOSTFIX)/
-OBJDIR=$(OBJROOT)$(TGT_MACHINE)/
+OBJDIR=$(OBJROOT)$(PREFIX)$(SEP1)$(POSTFIX)/
 OBJS=$(addprefix $(OBJDIR),$(patsubst %.c,%.o ,$(patsubst %.cpp,%.o,$(SRC))))
 MAKEFILEPATH:=$(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENTDIRNAM:=$(notdir $(patsubst %/,%,$(dir $(MAKEFILEPATH))))
 LIBNAM=$(CURRENTDIRNAM)
-ifneq (,$(findstring mingw,$(TGT_MACHINE)))
+ifneq (,$(findstring mingw,$(PREFIX)))
 	DSOEXT=.dll
-else ifneq (,$(findstring djgpp,$(TGT_MACHINE)))
+else ifneq (,$(findstring djgpp,$(PREFIX)))
 	DSOEXT=.dxe
-else ifneq (,$(findstring linux,$(TGT_MACHINE)))
+else ifneq (,$(findstring linux,$(PREFIX)))
 	DSOEXT=.so
 else
 	DSOEXT=.so
 endif
 LIBEXT=.a
-ifneq (,$(findstring djgpp,$(TGT_MACHINE)))
+ifneq (,$(findstring djgpp,$(PREFIX)))
 	DXEEXT=.dxe
 endif
 LIB=$(LIBDIR)/lib$(LIBNAM)$(LIBEXT)
-ifneq (,$(findstring djgpp,$(TGT_MACHINE)))
+ifneq (,$(findstring djgpp,$(PREFIX)))
 	LIBIMP=$(LIBDIR)/libi$(LIBNAM)$(LIBEXT)
 endif
-ifneq (,$(findstring djgpp,$(TGT_MACHINE)))
-	SRCEXP=$(LIBDIR)/$(LIBCOMPILERPREFIX)$(LIBNAM).c
+ifneq (,$(findstring djgpp,$(PREFIX)))
+	SRCEXP=$(LIBDIR)/$(LIBPREFIX)$(LIBNAM).c
 endif
 DSO=$(LIBDIR)/lib$(LIBNAM)$(DSOEXT)
-ifneq (,$(findstring djgpp,$(COMPILERPREFIX)))
-	DXE=$(LIBDIR)/$(LIBCOMPILERPREFIX)$(LIBNAM)$(DXEEXT)
+ifneq (,$(findstring djgpp,$(PREFIX)))
+	DXE=$(LIBDIR)/$(LIBPREFIX)$(LIBNAM)$(DXEEXT)
 endif
-LIBCOMPILERPREFIX=lib
-ifneq (,$(findstring mingw,$(COMPILERPREFIX)))
+LIBPREFIX=lib
+ifneq (,$(findstring mingw,$(PREFIX)))
 	UPX=upx
-else ifneq (,$(findstring djgpp,$(COMPILERPREFIX)))
-else ifneq (,$(findstring linux,$(COMPILERPREFIX)))
+else ifneq (,$(findstring djgpp,$(PREFIX)))
+else ifneq (,$(findstring linux,$(PREFIX)))
 	UPX=$(ECHO) skipping upx
 else
 	UPX=$(ECHO) skipping upx
@@ -144,23 +140,23 @@ endif
 CFLAGS=-Wall
 CFLAGS=-O2
 CFLAGS=-I./src
+#CFLAGS+=-s
+#CFLAGS+=-fvisibility=hidden
+#CFLAGS+=-fno-gnu-unique
 CXXFLAGS=-Wall
 CXXFLAGS=-O2
 CXXFLAGS=-I./src
 CXXFLAGS+=-s
 CXXFLAGS+=-fvisibility=hidden
-ifneq (,$(findstring aarch64,$(TGT_MACHINE)))
-else
-	CXXFLAGS+=-fno-gnu-unique
-endif
+CXXFLAGS+=-fno-gnu-unique
 #lib determination sample
-#LDFLAGS+=$(LIBDIR)$(LIBCOMPILERPREFIX)a$(SEP0)$(COMPILERPREFIX)$(SEP1)$(COMPILERPOSTFIX)$(DSOEXT)
-ifneq (,$(findstring mingw,$(TGT_MACHINE)))
+#LDFLAGS+=$(LIBDIR)$(LIBPREFIX)a$(SEP0)$(PREFIX)$(SEP1)$(POSTFIX)$(DSOEXT)
+ifneq (,$(findstring mingw,$(PREFIX)))
 	CXXFLAGS+=-fPIC
-else ifneq (,$(findstring posix,$(TGT_MACHINE)))
+else ifneq (,$(findstring posix,$(PREFIX)))
 	CXXFLAGS+=-fPIC
-else ifneq (,$(findstring djgpp,$(TGT_MACHINE)))
-else ifneq (,$(findstring linux,$(TGT_MACHINE)))
+else ifneq (,$(findstring djgpp,$(PREFIX)))
+else ifneq (,$(findstring linux,$(PREFIX)))
 	CXXFLAGS+=-fPIC
 else
 	CXXFLAGS+=-fPIC
@@ -168,33 +164,28 @@ endif
 CXXFLAGS+=-DLIBNAM=\"$(LIBNAM)\"
 CXXFLAGS+=-DDSOENTRY=$(LIBNAM)_entry
 CXXFLAGS+=-DLIBDIR=\"$(LIBDIR)\"
-CXXFLAGS+=-DLIBCOMPILERPREFIX=\"$(LIBCOMPILERPREFIX)\"
-CXXFLAGS+=-DCOMPILERPREFIX=\"$(COMPILERPREFIX)\"
-CXXFLAGS+=-DCOMPILERPOSTFIX=\"$(COMPILERPOSTFIX)\"
+CXXFLAGS+=-DLIBPREFIX=\"$(LIBPREFIX)\"
+CXXFLAGS+=-DPREFIX=\"$(PREFIX)\"
+CXXFLAGS+=-DPOSTFIX=\"$(POSTFIX)\"
 CXXFLAGS+=-DDSOEXT=\"$(DSOEXT)\"
 CXXFLAGS+=-DGCCVERSION=\"$(GCCVERSION)\"
-LDFLAGS+=-L../lib
-ifneq (,$(findstring mingw,$(TGT_MACHINE)))
-#	LDFLAGS+=-static-libgcc
-#	LDFLAGS+=-static-libstdc++
-#	LDFLAGS+=-static
+LDFLAGS+=-L$(DEPLOYDIR)
+ifneq (,$(findstring mingw,$(PREFIX)))
 	LDFLAGS+=-shared
 	LDFLAGS+=-static
-#	LDFLAGS+=-Wl,-Bstatic
-#	LDFLAGS+=-Wl,-Bdynamic
-	ifneq (,$(findstring win32,$(COMPILERPOSTFIX)))
-#		LDFLAGS+=-Wl,-Bstatic -lwinpthread -Wl,-Bdynamic
-#		LDFLAGS+=-Wl,-Bstatic -lpthread -Wl,-Bdynamic
+endif
+ifneq (,$(findstring mingw,$(PREFIX)))
+	ifneq (,$(findstring win32,$(POSTFIX)))
+		LDFLAGS+=-Wl,-Bdynamic
 	else
-#		LDFLAGS+=-Wl,-Bstatic -lpthread -Wl,-Bdynamic
-#		LDFLAGS+=-Wl,-Bstatic -lwinpthread -Wl,-Bdynamic
+		LDFLAGS+=-Wl,-Bdynamic
 	endif
-else ifneq (,$(findstring posix,$(TGT_MACHINE)))
+else ifneq (,$(findstring posix,$(PREFIX)))
 	CXXFLAGS+=-fPIC
 	LDFLAGS+=-shared
 	LDFLAGS+=-ldl
-else ifneq (,$(findstring djgpp,$(TGT_MACHINE)))
-else ifneq (,$(findstring linux,$(TGT_MACHINE)))
+else ifneq (,$(findstring djgpp,$(PREFIX)))
+else ifneq (,$(findstring linux,$(PREFIX)))
 	LDFLAGS+=-shared
 	LDFLAGS+=-ldl
 	LDFLAGS+=-rdynamic
@@ -203,17 +194,30 @@ else
 	LDFLAGS+=-rdynamic
 	LDFLAGS+=-Wl,-rpath=./lib
 endif
+#LIBS
+ifneq (,$(findstring djgpp,$(PREFIX)))
+	LDFLAGS+=-lia
+else
+	LDFLAGS+=-la
+endif
+ifneq (,$(findstring mingw,$(PREFIX)))
+	ifneq (,$(findstring win32,$(POSTFIX)))
+		LDFLAGS+=-Wl,-Bstatic
+	else
+		LDFLAGS+=-Wl,-Bstatic
+	endif
+endif
 ifeq (run,$(firstword $(MAKECMDGOALS)))
   RUN_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(RUN_ARGS):;@:)
 endif
 all:deploy
-ifneq (,$(findstring djgpp,$(COMPILERPREFIX)))
+ifneq (,$(findstring djgpp,$(PREFIX)))
 #all:$(DXE)
 all:$(LIB)
 $(DXE):export DJDIR=$(TOOLCHAINDIR)
 $(DXE):export PATH=$(TOOLCHAINDIR)/bin:/usr/local/djgpp/i586-pc-msdosdjgpp/bin
-$(DXE):export GCC_EXEC_COMPILERPREFIX=$(TOOLCHAINDIR)/lib/gcc/
+$(DXE):export GCC_EXEC_PREFIX=$(TOOLCHAINDIR)/lib/gcc/
 $(DXE):export DJDIR=$(TOOLCHAINDIR)/i586-pc-msdosdjgpp
 $(DXE) $(LIBIMP):$(LIB)
 	@$(ECHO) "generating $(DXE):$(LIBDIR)..."
@@ -284,7 +288,7 @@ dumpsyms:$(OBJS)
 run:$(DSO)
 	@$(ECHO) "running $(DSO)..."
 	@$(DSO) $(RUN_ARGS) 
-.phony:clean sta
+.phony:clean
 clean:
 	@$(ECHO) "cleaning ..."
 	@$(ECHO) "removing $(BUILDDIR)..."
@@ -296,8 +300,11 @@ cleanall:
 	@rm -rf $(BUILDROOT)/*
 	@$(ECHO) "removing $(OBJROOT)..."
 	@rm -rf $(OBJROOT)/*
+test:
+	@$(ECHO) $(BUILDROOT)
+	@$(ECHO) $(BUILDDIR)
+	@$(ECHO) $(LIBDIR)
+	@$(ECHO) $(DEPLOYDIR)
 sta:
 	@$(ECHO) "performing static analysis on $(SRC)..."
 	@$(CPPCHECK) --enable=all $(SRC)
-test:
-	echo $(TGT_MACHINE)
