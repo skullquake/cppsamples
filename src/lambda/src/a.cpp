@@ -79,5 +79,17 @@ int main(int argc,char** argv){
 		std::for_each(vf.begin(),vf.end(),[&vt](auto f){vt.push_back(std::thread(f));});
 		std::for_each(vt.begin(),vt.end(),[](auto&t){t.join();});
 	}
+	{//mutable
+		auto a=42;
+		[a]()mutable->void{
+			auto b=a;//with mutable you can assign
+		};
+	}
+	{//mutable
+		auto a=42;
+		[=]()mutable->void{
+			auto b=a;//with mutable you can assign
+		};
+	}
 	return 0;
 }

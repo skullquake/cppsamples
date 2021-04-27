@@ -208,6 +208,26 @@ int main(int argc,char** argv){
 			std::cerr<<"Error: Could not open file"<<std::endl;
 		}
 	}
+	{
+		std::vector<int>v;
+		std::ostringstream oss;
+		oss<<0<<std::endl
+		   <<1<<std::endl
+		   <<2<<std::endl
+		   <<3<<std::endl
+		;
+		std::istringstream iss(oss.str());
+		std::istream_iterator<int>ii(iss);
+		std::istream_iterator<int>eos;
+		int i;
+		while(ii!=eos){
+			v.push_back(*ii++);
+
+		}
+		for(const auto&i:v){
+			std::cout<<i<<" ";
+		}std::cout<<std::endl;
+	}
 
 	return 0;
 }

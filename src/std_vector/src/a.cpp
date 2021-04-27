@@ -45,5 +45,9 @@ int main(int argc,char** argv){
 	for(auto b=a.rbegin();b!=a.rend();++b)
 		std::cout<<*b<<std::endl;
 	std::cout<<"----------------------------------------"<<std::endl;
+	{
+		a.insert(a.begin(),{0,1,2,3});
+		std::vector<int>b(std::move(a));
+	}
 	return 0;
 }

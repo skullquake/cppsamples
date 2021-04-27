@@ -115,5 +115,12 @@ int main(int argc,char** argv){
 			std::cerr<<"Error: Could not open file"<<std::endl;
 		}
 	}
+	{
+		std::ostream_iterator<int>oi(std::cout," ");
+		for(int i:{0,1,2,3}){
+			*oi++=i;
+
+		}
+	}
 	return 0;
 }

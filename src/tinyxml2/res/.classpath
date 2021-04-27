@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="javasource"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Program Files/Mendix/7.23.11.64691/runtime/bundles/com.mendix.json.jar"/><classpathentry kind="lib" path="C:/Program Files/Mendix/7.23.11.64691/runtime/bundles/com.mendix.logging-api.jar"/><classpathentry kind="lib" path="C:/Program Files/Mendix/7.23.11.64691/runtime/bundles/com.mendix.m2ee-api.jar"/><classpathentry kind="lib" path="C:/Program Files/Mendix/7.23.11.64691/runtime/bundles/com.mendix.public-api.jar"/><classpathentry kind="lib" path="C:/Program Files/Mendix/7.23.11.64691/runtime/bundles/javax.servlet-api.servlet.jar"/>
+	<classpathentry kind="lib" path="userlib/bcpkix-jdk15on-1.54.jar"/><classpathentry kind="lib" path="userlib/bcprov-jdk16-1.46.jar"/><classpathentry kind="lib" path="userlib/com.google.gson-2.2.4.jar"/><classpathentry kind="lib" path="userlib/commons-logging-1.1.1.jar"/><classpathentry kind="lib" path="userlib/guava-14.0.1.jar"/><classpathentry kind="lib" path="userlib/org.apache.commons.io-2.3.0.jar"/><classpathentry kind="lib" path="userlib/org.eclipse.paho.client.mqttv3-1.1.1.jar"/><classpathentry kind="lib" path="userlib/spring-beans-5.2.3.RELEASE.jar"/><classpathentry kind="lib" path="userlib/spring-context-5.2.3.RELEASE.jar"/><classpathentry kind="lib" path="userlib/spring-core-5.2.3.RELEASE.jar"/>
+	<classpathentry kind="output" path="deployment/run/bin"/>
+</classpath>
